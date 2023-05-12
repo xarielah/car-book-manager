@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axiosClient from "../service/axios";
 import {
-  User,
   authUser,
   currentUser,
   logoutUser,
@@ -19,14 +18,22 @@ const useAuth = () => {
         .get("/auth/user")
         .then((res) => {
           if (res.status === 200) {
-            dispatch(authUser(res.data as User));
+            dispatch(
+              authUser({ ...res.data.user, ownedCars: res.data.ownedCars })
+            );
           } else {
-            authedUser.isAuthed && dispatch(logoutUser());
+            // dispatch(logoutUser());
           }
         })
-        .catch((_: any) =>
-          console.error("Fetching user from the server resulted with an error.")
-        );
+        .catch((error: any) => {
+          if (error.response.status == 403) {
+            authedUser.isAuthed && dispatch(logoutUser());
+            console.error("Error fetching forbidden resources - unauthorized");
+          } else
+            console.error(
+              "Fetching user from the server resulted with an error."
+            );
+        });
     }
 
     getUser();

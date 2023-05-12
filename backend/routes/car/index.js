@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../../lib/db/schemas/car");
+const isCarMine = require("../../lib/utils/is-car-mine");
 
 router.post("/add-new-car", (req, res) => {
   const motUri = (carNumber) =>
@@ -58,6 +59,24 @@ router.get("/user-cars", (req, res) => {
         .status(500)
         .json({ message: "There was an error trying to fetch your cars" })
     );
+});
+
+router.get("/:id", isCarMine, async (req, res) => {
+  res.status(200).json({ car: req.car });
+});
+
+router.delete("/:id", isCarMine, async (req, res) => {
+  const deletedCar = await Car.findByIdAndDelete(req.car.id);
+  console.log(
+    "🚀 ~ file: index.js:70 ~ router.delete ~ deletedCar:",
+    deletedCar
+  );
+
+  res
+    .status(200)
+    .json({
+      message: `Car id \"${deletedCar._id}\" was deleted from user id \"${deletedCar.user_id}\"'s ownership.`,
+    });
 });
 
 module.exports = router;
