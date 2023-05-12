@@ -1,5 +1,3 @@
-import React from "react";
-
 const CarPlateLogo = () => {
   return (
     <span className="w-max text-3xl bg-yellow-300 font-bold cursor-pointer duration-300 ease-in-out hover:scale-[1.1] pl-1 flex items-center justify-center rounded-md border-[1px] border-slate-300 shadow-md text-gray-800">
