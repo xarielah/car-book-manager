@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axiosClient from "../../service/axios";
 import ViewCarRecords from "../../components/pages/view-car/view-car-records";
 

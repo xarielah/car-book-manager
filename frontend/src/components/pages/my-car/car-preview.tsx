@@ -3,7 +3,7 @@ import { UserCar } from "../../../pages/my-cars/my-cars";
 import { fetchCarFromMOT } from "../../../service/mot-car-data";
 import { MOTCarData } from "../add-a-car/car-search-info";
 import { Link } from "react-router-dom";
-import { parseCarNumber, parseDate, parseNumber } from "../../../lib/util";
+import { parseDate, parseNumber } from "../../../lib/util";
 import CarPlate from "./car-plate";
 import DeleteOwnedCar from "./delete-owned-car";
 
