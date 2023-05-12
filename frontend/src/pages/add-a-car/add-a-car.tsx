@@ -40,7 +40,7 @@ const AddACar = () => {
         <input
           value={carNumber}
           onChange={handleInput}
-          className="rounded-md shadow-md p-2 w-full"
+          className="classic-input w-full"
           placeholder="חיפוש לפי מספר רכב"
         />
         <button

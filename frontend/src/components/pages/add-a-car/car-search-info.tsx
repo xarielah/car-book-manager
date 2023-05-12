@@ -1,38 +1,69 @@
 import { useState } from "react";
 import axiosClient from "../../../service/axios";
+import useAuth from "../../../hooks/use-auth";
+import { Link, useNavigate } from "react-router-dom";
+import CarPlate from "../my-car/car-plate";
+import { parseDate } from "../../../lib/util";
+import OwnCarSearch from "../../ui-elements/buttons/own-car-search";
+import {} from "react-router-dom";
 
 const CarSearchInfo = ({ car }: ICarSearchInfoProps) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { authedUser } = useAuth();
+
+  const navigate = useNavigate();
 
   const addCar = (carNumber: string) => {
     setLoading(true);
     axiosClient
       .post("/manage-cars/add-new-car", { car: carNumber })
-      .then((res) => res.data)
+      .then((_) => {
+        navigate("/manage-cars/my-cars", { replace: true });
+      })
       .catch((_) => console.error("Error occurred while adding a car"))
       .finally(() => setLoading(false));
   };
 
   return (
-    <section>
-      <h1 className="font-bold text-3xl">מצאנו את הרכב שלך</h1>
+    <section className="flex flex-col my-12 gap-6">
+      <h1 className="heading">מצאנו את הרכב שלך</h1>
       <article className="flex-col gap-3 flex">
         <div className="flex justify-between">
-          <h2 className="font-bold text-4xl">{car.mispar_rechev}</h2>
-          <button
-            onClick={() =>
-              addCar(car.mispar_rechev ? car.mispar_rechev.toString() : "")
-            }
-          >
-            {loading ? "מוסיף את הרכב..." : "הוסף רכב"}
-          </button>
+          <div className="flex flex-col gap-1">
+            <h2 className="font-bold text-slate-700 text-2xl">
+              {car.tozeret_nm}, {car.kinuy_mishari}, שנת {car.shnat_yitzur}
+            </h2>
+            <CarPlate>
+              {car.mispar_rechev ? car.mispar_rechev.toString() : ""}
+            </CarPlate>
+          </div>
+          {authedUser.ownedCars.includes(
+            car.mispar_rechev ? car.mispar_rechev.toString() : ""
+          ) ? (
+            <div className="flex flex-col gap-1 items-center">
+              <small>רכב זה כבר בבעלותך</small>
+              <Link to="/manage-cars/my-cars">
+                <button className="button classic-mid-button classic-sub-button">
+                  הרכבים שלי
+                </button>
+              </Link>
+            </div>
+          ) : !loading ? (
+            <OwnCarSearch
+              fn={() =>
+                addCar(car.mispar_rechev ? car.mispar_rechev.toString() : "")
+              }
+            />
+          ) : (
+            <>רושם את הרכב בבעלותך...</>
+          )}
         </div>
-        <p>
-          רכב מסוג {car.tozeret_nm} {car.kinuy_mishari}, שנת עלייה לכביש{" "}
-          {car.shnat_yitzur}, טסט אחרון מתאריך{" "}
-          {new Date(car.mivchan_acharon_dt ?? "").toLocaleDateString("en-IL")}{" "}
-          עד {new Date(car.tokef_dt ?? "").toLocaleDateString("en-IL")}
-        </p>
+        <div className="flex flex-col">
+          <div>
+            תוקף מבחן רישוי נוכחי: {parseDate(car.mivchan_acharon_dt ?? "")}
+          </div>
+          <div>מבחן רישוי הבא: {parseDate(car.tokef_dt ?? "")}</div>
+        </div>
       </article>
     </section>
   );

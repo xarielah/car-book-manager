@@ -13,6 +13,7 @@ const isAuthed = require("./middleware/must-be-authed");
 
 const carController = require("./routes/car");
 const authController = require("./routes/auth");
+const recordController = require("./routes/record");
 const passport = require("passport");
 
 const PORT = keys.app.port;
@@ -24,6 +25,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
+
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan("dev"));
@@ -40,6 +42,7 @@ app.use(passport.session());
 
 app.use("/auth", authController);
 app.use("/manage-cars", isAuthed, carController);
+app.use("/car-records", isAuthed, recordController);
 
 app.use("*", (_, res) => {
   res.send("Default page");

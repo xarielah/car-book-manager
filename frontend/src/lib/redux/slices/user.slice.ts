@@ -7,6 +7,7 @@ export type User = {
   email: string;
   avatar: string;
   isAuthed: boolean;
+  ownedCars: string[];
 };
 
 const initialState: User = {
@@ -14,6 +15,7 @@ const initialState: User = {
   email: "",
   avatar: "",
   isAuthed: false,
+  ownedCars: [],
 };
 
 const userSlice = createSlice({
@@ -25,12 +27,14 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.avatar = action.payload.avatar;
       state.isAuthed = true;
+      state.ownedCars = action.payload.ownedCars;
     },
     logoutUser(state) {
       state.displayName = initialState.displayName;
       state.email = initialState.email;
       state.avatar = initialState.displayName;
       state.isAuthed = initialState.isAuthed;
+      state.ownedCars = initialState.ownedCars;
     },
   },
 });
